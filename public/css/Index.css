@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0, #f8fafc);
+  color: #1e293b; /* Dark slate text */
+  text-align: center;
+  overflow-x: hidden;
+}
+main {
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h2 {
+  font-size: 3.5rem;
+  color: #0ea5e9; /* Sky blue accent */
+  margin-top: 2rem;
+  letter-spacing: 1px;
+}

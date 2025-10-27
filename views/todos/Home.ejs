@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="/css/Navbar.css" />
+    <link rel="stylesheet" href="/css/Home.css" />
+  </head>
+  <body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+    <main>
+      <form method="POST" action="/api/todos/new" class="inputForm">
+        <input type="text" placeholder="Enter Your Todo here" name="currTodoWork" required/>
+        <button id="addBtn">Add Todo</button>
+      </form>
+      <%if(allTodos.length){%>
+      <ul>
+        <% for(let todo of allTodos) {%>
+        <li class="todos">
+          <span id="todoContent"><%= todo.content %></span>
+          <div id="navLinks">
+            <a href="/api/todos/<%= todo._id %>/edit" id="editLinks">Edit</a>
+            <form method="POST" action="/api/todos/<%=todo._id%>?_method=DELETE" class="deleteForm">
+              <button id="deleteBtn">Delete</button>
+            </form>
+          </div>
+        </li>
+        <%}%>
+      </ul>
+      <%}else{%>
+        <h1 id="noTodoMsg">Add Your Todos Here !!</h1>
+      <%}%>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+header { 
+  max-height: 15vh;;
+  background-color: #1e293b; /* dark slate */
+  color: #f8fafc; /* light text */
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #38bdf8; /* sky blue accent */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#logo:hover {
+  color: #0ea5e9;
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.navLinks li {
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+.navLinks li a {
+  color: wheat;
+  text-decoration: none;;
+}
+.deleteBtnForm{
+  height: 100%;
+  display: flex;
+  align-items: center;;
+  padding: 0;
+  margin: 0;
+}
+#deleteUserBtn{
+  font-size: 1.4rem;
+  color: wheat;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+

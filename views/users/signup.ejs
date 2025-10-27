@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="/css/Navbar.css" />
+    <link rel="stylesheet" href="/css/signup.css" />
+  </head>
+  <body>
+    <%- include("../partials/navbar.ejs") %>
+    <main id="formContainer">
+      <form method="POST" action="/api/users/signUp" style="margin-block: 1rem">
+        <h2 class="formHeading">Sign Up</h2>
+        <input type="text" placeholder="Enter Username" name="username" required/>
+        <br />
+        <input type="email" placeholder="Enter Email" name="email" required />
+        <br />
+        <input type="password" placeholder="Enter Password" name="password" required/>
+        <br />
+        <button>Sign Up</button>
+      </form>
+      <%if(currUser){%> 
+        <a href="/api/todos" id="backBtn">Back</a>
+      <%}else{%>
+        <a href="/api" id="backBtn">Back</a>
+      <%}%>
+    </main>
+  </body>
+</html>

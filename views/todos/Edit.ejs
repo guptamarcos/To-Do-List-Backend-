@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="/css/Edit.css" />
+    <link rel="stylesheet" href="/css/Navbar.css" />
+  </head>
+  <body>
+    <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/flash.ejs") %>
+    <main>
+      <h1 class="heading">Edit the Todo</h1>
+      <form method="POST" action="/api/todos/<%=currTodo._id%>?_method=PATCH">
+        <textarea rows="10" cols="50" name="content"><%=currTodo.content%></textarea>
+        <br /><br />
+        <button>Submit</button>
+      </form>
+      <a href="/api/todos" id="backBtn">Back</a>
+    </main>
+  </body>
+</html>
