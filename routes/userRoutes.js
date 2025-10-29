@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require("../model/userSchema.js");
 const passport = require("passport");
 const wrapAsync = require("../utils/wrapAsync.js");
+const ExpressError = require("../utils/ExpressError.js");
+const {checkValidId} = require("../utils/middleware.js");
 
 // IT WILL RENDER SIGN UP FORM RENDER
 router.get("/signup", (req, res) => {
@@ -13,6 +15,7 @@ router.get("/signup", (req, res) => {
 router.post(
   "/signup",
   wrapAsync(async (req, res) => {
+   try{
     const { username, email, password } = req.body;
     const newUser = new User({ username, email });
     const currUser = await User.register(newUser, password);
@@ -23,6 +26,9 @@ router.post(
       req.flash("success", `Hi @${username}, Welcome to the Todo List App`);
       res.redirect("/api/todos");
     });
+  }catch(e){
+    throw new ExpressError(409,"User is already Exist");
+  }
   })
 );
 
@@ -32,17 +38,13 @@ router.get("/login", (req, res) => {
 });
 
 // IT WILL CHECK LOGIN CREDENTIALS
-router.post(
-  "/login",
+router.post("/login",
   passport.authenticate("local", {
     failureRedirect: "/api/users/login",
-    failureFlash: true,
+    failureFlash: "Invalid Username or Password",
   }),
   wrapAsync(async (req, res) => {
-    req.flash(
-      "success",
-      `Hi @${req.user.username}, Welcome to the Todo List App`
-    );
+    req.flash("success",`Hi @${req.user.username}, Welcome to the Todo List App`);
     res.redirect("/api/todos");
   })
 );
@@ -61,6 +63,7 @@ router.get("/logout", (req, res) => {
 // DELETED ROUTE
 router.delete(
   "/:id",
+  checkValidId,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     let deleteUser = await User.findByIdAndDelete(id);
@@ -73,4 +76,6 @@ router.delete(
     });
   })
 );
+
+
 module.exports = router;

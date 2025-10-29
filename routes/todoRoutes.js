@@ -1,9 +1,11 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const Todo = require("../model/todoSchema.js");
 const User = require("../model/userSchema.js");
-const isLoggedIn = require("../utils/middleware.js");
+const {isLoggedIn,checkValidId} = require("../utils/middleware.js");
 const wrapAsync = require("../utils/wrapAsync.js");
+const ExpressError = require("../utils/ExpressError.js");
 
 // HOME ROUTE (INDEX ROUTE) 
 // WHERE ALL THE TODOS OF THE USER IS SHOWN
@@ -23,27 +25,46 @@ router.post("/new",isLoggedIn,wrapAsync(async(req,res)=>{
 }));
 
 // EDIT FORM  
-// TO EDIT THE EXISTING TODO WORK
-router.get("/:id/edit",isLoggedIn,wrapAsync(async(req,res)=>{
-    const { id } = req.params;
-    const currTodo = await Todo.findById(id);
-    res.render("todos/Edit.ejs",{currTodo});
+router.get("/:id/edit", isLoggedIn,checkValidId, wrapAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const currTodo = await Todo.findById(id);
+  if (!currTodo) {
+    req.flash("error", "Todo not found");
+    return res.redirect("/api/todos");
+  }
+
+  res.render("todos/Edit.ejs", { currTodo });
 }));
 
 // UPDATE ROUTE 
-// UPDATE THE TODO WORK
-router.patch("/:id",isLoggedIn,wrapAsync(async(req,res)=>{
-    const { id } = req.params;
-    const { content } = req.body;
-    const currTodo = await Todo.findByIdAndUpdate(id, {content: content});
-    res.redirect("/api/todos");
+router.patch("/:id", isLoggedIn,checkValidId, wrapAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const { content } = req.body;
+  const currTodo = await Todo.findByIdAndUpdate(id, { content });
+
+  if (!currTodo) {
+    req.flash("error", "Todo not found");
+    return res.redirect("/api/todos");
+  }
+
+  req.flash("success", "Todo updated successfully");
+  res.redirect("/api/todos");
 }));
+
 
 // DELETE ROUTE
 // DELETE THE TODO FROM THE TODO LIST 
-router.delete("/:id",isLoggedIn,wrapAsync(async(req,res)=>{
+router.delete("/:id",isLoggedIn,checkValidId,wrapAsync(async(req,res)=>{
     const { id } = req.params;
     let deleteTodo = await Todo.findByIdAndDelete(id);
+
+    if (!deleteTodo) {
+      req.flash("error", "Todo not found");
+      return res.redirect("/api/todos");
+    }
+    
     const currUser = await User.findByIdAndUpdate(req.user._id,{$pull:{allTodos:id}});
     res.redirect("/api/todos");
 }));
