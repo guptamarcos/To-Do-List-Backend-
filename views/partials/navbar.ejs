@@ -7,11 +7,7 @@
       <li><a href="/api/users/login">LogIn</a></li>
       <%}else { %>
       <li><a href="/api/users/logout">LogOut</a></li>
-      <li>
-        <form method="POST" action="/api/users/<%=currUser._id%>?_method=DELETE" class="deleteBtnForm">
-          <button id="deleteUserBtn">Delete User</button>
-        </form>
-      </li>
+      <li><a href="/api/users/<%=currUser._id%>/deleteUser">Delete User</a></li>
       <%}%>
     </ul>
   </nav>

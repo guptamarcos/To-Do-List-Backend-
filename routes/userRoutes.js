@@ -1,81 +1,35 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../model/userSchema.js");
 const passport = require("passport");
 const wrapAsync = require("../utils/wrapAsync.js");
-const ExpressError = require("../utils/ExpressError.js");
-const {checkValidId} = require("../utils/middleware.js");
+const { checkValidId } = require("../utils/middleware.js");
+const userController = require("../controller/userController.js");
 
 // IT WILL RENDER SIGN UP FORM RENDER
-router.get("/signup", (req, res) => {
-  res.render("users/signup.ejs");
-});
+router.get("/signup", userController.renderSignupForm);
 
 // IT WILL FETCH USER DETAILS AND SAVE IT INTO THE USER MODEL
-router.post(
-  "/signup",
-  wrapAsync(async (req, res) => {
-   try{
-    const { username, email, password } = req.body;
-    const newUser = new User({ username, email });
-    const currUser = await User.register(newUser, password);
-    req.login(currUser, (err) => {
-      if (err) {
-        return next(err);
-      }
-      req.flash("success", `Hi @${username}, Welcome to the Todo List App`);
-      res.redirect("/api/todos");
-    });
-  }catch(e){
-    throw new ExpressError(409,"User is already Exist");
-  }
-  })
-);
+router.post("/signup",wrapAsync(userController.signupUser));
 
 // IT WILL RENDER LOGIN FORM
-router.get("/login", (req, res) => {
-  res.render("users/login.ejs");
-});
+router.get("/login", userController.renderLoginForm);
 
 // IT WILL CHECK LOGIN CREDENTIALS
-router.post("/login",
+router.post(
+  "/login",
   passport.authenticate("local", {
     failureRedirect: "/api/users/login",
     failureFlash: "Invalid Username or Password",
   }),
-  wrapAsync(async (req, res) => {
-    req.flash("success",`Hi @${req.user.username}, Welcome to the Todo List App`);
-    res.redirect("/api/todos");
-  })
+  wrapAsync(userController.loginUser)
 );
 
 // LOGOUT ROUTE
-router.get("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    req.flash("Error", "You are logged out from the App");
-    res.redirect("/api");
-  });
-});
+router.get("/logout", userController.logoutUser);
 
-// DELETED ROUTE
-router.delete(
-  "/:id",
-  checkValidId,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let deleteUser = await User.findByIdAndDelete(id);
-    req.logout((err) => {
-      if (err) {
-        return next(err);
-      }
-      req.flash("success", `${deleteUser.username} is deleted successfully`);
-      res.redirect("/api");
-    });
-  })
-);
+// DELETE ROUTE
+router.get("/:id/deleteUser", checkValidId, userController.renderDeleteForm);
 
+router.delete("/:id",checkValidId,wrapAsync(userController.deleteUser));
 
 module.exports = router;

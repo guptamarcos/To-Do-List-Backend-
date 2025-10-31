@@ -12,6 +12,9 @@
     <%- include("../partials/flash.ejs") %>
     <main>
       <h2>Welcome to the Todo list App!</h2>
+      <%if(currUser){%> 
+        <a href="/api/todos" class="entryLink">Go To TodoApp</a>
+      <%}%>
     </main>
   </body>
 </html>
