@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT;
 const path = require("path");
 const methodOverride = require("method-override");
 const todoRoutes = require("./routes/todoRoutes.js");
@@ -16,9 +16,9 @@ const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./model/userSchema.js");
 
-const mongoDB_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/todoDb";
+// const mongoDB_URL = process.env.MONGO_URL;
 async function main() {
-  await mongoose.connect(mongoDB_URL);
+  await mongoose.connect(process.env.MONGO_URL);
 }
 
 main()
@@ -30,11 +30,14 @@ main()
   });
 
 const sessionOption = {
-  secret: process.env.SECRET || "mySecretCode",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL || "mongodb://127.0.0.1:27017/todoDb",
+    mongoUrl: process.env.MONGO_URL,
+    crypto: {
+      secret: process.env.SECRET,
+    },
     touchAfter: 24 * 3600, 
   }),
   cookie: {
